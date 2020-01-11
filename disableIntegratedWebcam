@@ -1,0 +1,60 @@
+#!/bin/bash
+
+# $ v4l2-ctl -d /dev/video1 -D --list-formats-ext
+#Driver Info (not using libv4l2):
+#	Driver name   : uvcvideo
+#	Card type     : PIXPRO SP360 4K: PIXPRO SP360 4
+#	Bus info      : usb-0000:00:14.0-3
+#	Driver version: 4.14.40
+#	Capabilities  : 0x84200001
+#		Video Capture
+#		Streaming
+#		Extended Pix Format
+#		Device Capabilities
+#	Device Caps   : 0x04200001
+#		Video Capture
+#		Streaming
+#		Extended Pix Format
+#ioctl: VIDIOC_ENUM_FMT
+#	Index       : 0
+#	Type        : Video Capture
+#	Pixel Format: 'MJPG' (compressed)
+#	Name        : Motion-JPEG
+#		Size: Discrete 3840x2160
+#			Interval: Discrete 0.200s (5.000 fps)
+#		Size: Discrete 2880x2880
+#			Interval: Discrete 0.200s (5.000 fps)
+#		Size: Discrete 2048x2048
+#			Interval: Discrete 0.200s (5.000 fps)
+#		Size: Discrete 1440x1440
+#			Interval: Discrete 0.067s (15.000 fps)
+#			Interval: Discrete 0.200s (5.000 fps)
+#		Size: Discrete 1920x1080
+#			Interval: Discrete 0.067s (15.000 fps)
+#			Interval: Discrete 0.200s (5.000 fps)
+#		Size: Discrete 1280x720
+#			Interval: Discrete 0.033s (30.000 fps)
+#			Interval: Discrete 0.067s (15.000 fps)
+#			Interval: Discrete 0.200s (5.000 fps)
+#		Size: Discrete 640x360
+#			Interval: Discrete 0.033s (30.000 fps)
+#			Interval: Discrete 0.067s (15.000 fps)
+#			Interval: Discrete 0.200s (5.000 fps)
+
+
+cd /sys/bus/usb/devices
+prod=b469
+
+id="`grep "$prod" */idProduct | sed -e 's#/.*$##'`"
+
+cd "$id"
+
+cur="`cat bConfigurationValue`"
+if [ "$cur" != 1 ]; then
+	echo already disabled
+	exit 0
+fi
+echo "need pass to disable."
+sudo su -c 'echo 0 > bConfigurationValue'
+echo "done."
+
